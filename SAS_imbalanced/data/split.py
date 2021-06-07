@@ -1,4 +1,5 @@
 from sklearn.model_selection import train_test_split
+import os
 
 def split(df, strat='chrono', out_dir=None):
     '''
@@ -8,9 +9,14 @@ def split(df, strat='chrono', out_dir=None):
     '''
     assert strat in ['chrono']
 
+    df_train, df_dev, df_test = None, None, None
     if strat == 'chrono':
-
         df_train, df_test = train_test_split(df, test_size=0.2, shuffle=False)
-        df_dev, df_test = train_test_split(X_test, test_size=0.5, shuffle=False)
+        df_dev, df_test = train_test_split(df_test, test_size=0.5, shuffle=False)
 
-        return df_train, df_dev, df_test
+    if out_dir is not None:
+        df_train.to_csv(os.path.join(out_dir, 'train.csv'))
+        df_dev.to_csv(os.path.join(out_dir, 'dev.csv'))
+        df_test.to_csv(os.path.join(out_dir, 'test.csv'))
+
+    return df_train, df_dev, df_test
