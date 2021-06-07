@@ -25,7 +25,7 @@ def split(df, strat='chrono', out_dir=None):
 
 
 if __name__ == '__main__':
-    assert len(sys.argv) > 1:
+    assert len(sys.argv) > 1, 'must specify a path to dataset'
     path_to_data = sys.argv[1]
 
     df = pd.read_csv(path_to_data)
