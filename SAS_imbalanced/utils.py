@@ -1,7 +1,7 @@
 from sklearn.metrics import average_precision_score
 
 
-def auc-pr(target, pred):
+def auc_pr(target, pred):
     '''
     Matthews correlation coefficient
     
