@@ -1,6 +1,7 @@
-def split(path_to_csv, out_dir):
+def split(df, strat='chrono', out_dir=None):
     '''
-      accepts a csv file with dataset, writes train, dev and test csv folds
-      into a specified directory
+      accepts a dataframe with dataset, returns train, dev and test dataframe folds
+      strat: how to split the data into folds; either 'chrono' or 'stratify'
+      out_dir: if specified, write csvs to this directory
     '''
     raise NotImplementedError
