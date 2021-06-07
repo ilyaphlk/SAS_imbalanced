@@ -1,5 +1,7 @@
+import pandas as pd
 from sklearn.model_selection import train_test_split
 import os
+import sys
 
 def split(df, strat='chrono', out_dir=None):
     '''
@@ -20,3 +22,11 @@ def split(df, strat='chrono', out_dir=None):
         df_test.to_csv(os.path.join(out_dir, 'test.csv'))
 
     return df_train, df_dev, df_test
+
+
+if __name__ == '__main__':
+    assert len(sys.argv) > 1:
+    path_to_data = sys.argv[1]
+
+    df = pd.read_csv(path_to_data)
+    split(df, out_dir='.')
