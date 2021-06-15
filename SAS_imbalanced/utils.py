@@ -90,6 +90,7 @@ def plot_runs(metric_list, xticks_range, xlabel, metric_name="AUC-PR"):#, title)
     plt.xlabel(xlabel)
     plt.ylabel(metric_name)
     #plt.title(title)
+    plt.legend()
     plt.show()
 '''
 Пример использования
