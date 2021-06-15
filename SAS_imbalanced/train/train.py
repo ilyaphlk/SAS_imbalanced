@@ -3,7 +3,8 @@ import yaml
 from SAS_imbalanced.featurize import featurize
 from SAS_imbalanced.resample import resample
 #from SAS_imbalanced.utils import compute_metrics
-from catboost import CatBoostClassifier, save_model
+from catboost import CatBoostClassifier
+from sklearn.metrics import f1_score, average_precision_score
 
 
 def train_model(config_yaml,
@@ -32,13 +33,35 @@ def train_model(config_yaml,
     clf_kwargs = params['classifier_kwargs']
     clf = clf_class(**clf_kwargs)
 
-    clf.fit(df_train.drop(columns['Class']), df_train['Class'])
+    y_train, y_dev = df_train['Class'], df_dev['Class']
+    X_train, X_dev = df_train.drop(columns=['Class']), df_dev.drop(columns=['Class'])
+    clf.fit(X_train, y_train)
 
-    save_model(clf, out_model_path)
+    y_pred = clf.predict(X_train)
+    print("average_precision, train:", average_precision_score(y_train, y_pred))
+
+    y_pred = clf.predict(X_dev)
+    print("average_precision, train:", average_precision_score(y_dev, y_pred))
+
+    exp_name = params['exp_name']
+    clf.save_model(exp_name)
 
 
 
-def run_model(model_pickle, test_csv):
+def run_model(config_yaml, test_csv):
     '''
         run a pretrained model
     '''
+    with open(config_yaml) as cfg:
+        params = yaml.load(cfg, Loader=yaml.FullLoader)
+
+    clf = CatBoostClassifier()
+    exp_name = params['exp_name']
+    clf.load_model(exp_name)
+
+    df_test = pd.read_csv(test_csv_path)
+    y_test = df_test['Class']
+    X_test = df_test.drop(columns=['Class'])
+
+    y_pred = clf.predict(X_test)
+    print("average_precision, test:", average_precision_score(y_test, y_pred))
