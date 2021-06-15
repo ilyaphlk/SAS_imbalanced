@@ -52,6 +52,9 @@ def train_model(config_yaml, folds_path, out_model_path):
     y_pred = clf.predict(X_dev)
     print("average_precision, validation:", average_precision_score(y_dev, y_pred))
 
+    y_pred = clf.predict(X_test)
+    print("average_precision, test:", average_precision_score(y_test, y_pred))
+
     print("saving model... ", end="")
     exp_name = params['exp_name']
     clf.save_model(os.path.join(out_model_path, exp_name))
