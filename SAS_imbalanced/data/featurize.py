@@ -1,4 +1,6 @@
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.compose import ColumnTransformer
+import pandas as pd
 
 
 def featurize(df_train, df_dev, df_test, drop_features=None):
@@ -24,8 +26,8 @@ def featurize(df_train, df_dev, df_test, drop_features=None):
     ])
 
     ct.fit(df_train)
-    df_train = ct.transform(df_train)
-    df_dev = ct.transform(df_dev)
-    df_test = ct.transform(df_test)
+    df_train = pd.DataFrame(ct.transform(df_train), index=df_train.index, columns=df_train.columns)
+    df_dev = pd.DataFrame(ct.transform(df_dev), index=df_dev.index, columns=df_dev.columns)
+    df_test = pd.DataFrame(ct.transform(df_test), index=df_test.index, columns=df_test.columns)
 
     return df_train, df_dev, df_test
