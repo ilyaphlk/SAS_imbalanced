@@ -28,5 +28,9 @@ if __name__ == '__main__':
     assert len(sys.argv) > 1, 'must specify a path to dataset'
     path_to_data = sys.argv[1]
 
+    out_dir = "."
+    if len(sys.argv) > 2:
+        out_dir = sys.argv[2]
+
     df = pd.read_csv(path_to_data)
-    split(df, out_dir='.')
+    split(df, out_dir=out_dir)
