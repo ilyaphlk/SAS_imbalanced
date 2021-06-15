@@ -27,7 +27,7 @@ def train_model(config_yaml, folds_path, out_model_path):
     print("done.")
 
 
-    print("resampling... ", end='') #print("done.")
+    print("resampling... ", end='')
     resampler_class = eval(params.get('resampler', 'None'))
     resampler_kwargs = params.get('resampler_kwargs', {})
     if resampler_class is not None:
