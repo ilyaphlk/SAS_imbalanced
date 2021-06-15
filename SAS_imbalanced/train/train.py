@@ -3,13 +3,14 @@ import yaml
 from SAS_imbalanced.featurize import featurize
 from SAS_imbalanced.resample import resample
 #from SAS_imbalanced.utils import compute_metrics
+import os
+import sys
+import pandas as pd
 from catboost import CatBoostClassifier
 from sklearn.metrics import f1_score, average_precision_score
 
 
-def train_model(config_yaml,
-    train_csv_path, dev_csv_path, test_csv_path,
-    out_model_path):
+def train_model(config_yaml, folds_path, out_model_path):
     '''
         fit all the stuff
         featurize, resample, fit a classifier
@@ -17,9 +18,9 @@ def train_model(config_yaml,
     with open(config_yaml) as cfg:
         params = yaml.load(cfg, Loader=yaml.FullLoader)
     
-    df_train = pd.read_csv(train_csv_path)
-    df_dev = pd.read_csv(dev_csv_path)
-    df_test = pd.read_csv(test_csv_path)
+    df_train = pd.read_csv(os.path.join(folds_path, 'train.csv'))
+    df_dev = pd.read_csv(os.path.join(folds_path, 'dev.csv'))
+    df_test = pd.read_csv(os.path.join(folds_path, 'test.csv'))
 
     df_train, df_dev, df_test = featurize(df_train, df_dev, df_test)
 
@@ -44,24 +45,16 @@ def train_model(config_yaml,
     print("average_precision, train:", average_precision_score(y_dev, y_pred))
 
     exp_name = params['exp_name']
-    clf.save_model(exp_name)
+    clf.save_model(os.path.join(out_model_path, exp_name))
 
 
+if __name__ == "__main__":
+    assert len(sys.argv) > 2, 'must specify a path to config, path to folds'
+    path_to_config = sys.argv[1]
+    path_to_folds = sys.argv[2]
 
-def run_model(config_yaml, test_csv):
-    '''
-        run a pretrained model
-    '''
-    with open(config_yaml) as cfg:
-        params = yaml.load(cfg, Loader=yaml.FullLoader)
+    model_save_path = "."
+    if len(sys.argv) > 3:
+        model_save_path = sys.argv[3]
 
-    clf = CatBoostClassifier()
-    exp_name = params['exp_name']
-    clf.load_model(exp_name)
-
-    df_test = pd.read_csv(test_csv_path)
-    y_test = df_test['Class']
-    X_test = df_test.drop(columns=['Class'])
-
-    y_pred = clf.predict(X_test)
-    print("average_precision, test:", average_precision_score(y_test, y_pred))
+    train_model(path_to_config, path_to_folds, model_save_path)
