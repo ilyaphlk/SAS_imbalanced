@@ -1,0 +1,7 @@
+exp_name: "sample_run"
+split_strat: 'chrono'
+resampler: None
+resampler_kwargs: {}
+classifier: CatBoostClassifier
+classifier_kwargs:
+  n_estimators: 10

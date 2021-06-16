@@ -1,0 +1,7 @@
+exp_name: "forest_run"
+split_strat: 'chrono'
+resampler: None
+resampler_kwargs: {}
+classifier: RandomForestClassifier
+classifier_kwargs:
+  n_estimators: 100
