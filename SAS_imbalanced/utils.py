@@ -1,6 +1,7 @@
 from sklearn.metrics import average_precision_score
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 
 def auc_pr(target, pred):
@@ -92,20 +93,34 @@ def plot_runs(metric_list, xticks_range, xlabel, metric_name="AUC-PR"):#, title)
     #plt.title(title)
     plt.legend()
     plt.show()
-'''
-Пример использования
+# '''
+# Пример использования
 
-res = []
-for param in params:
-    temp = []
-    model.fit(x_train, param)
-    y_pred_proba = model.predict_proba(x_train)
-    temp.append(compute_metrics(y_train,y_pred_proba))
-    y_pred_proba = model.predict_proba(x_val)
-    temp.append(compute_metrics(y_val,y_pred_proba))
-    y_pred_proba = model.predict_proba(x_test)
-    temp.append(compute_metrics(y_test,y_pred_proba))
-    res.append(res)
-plot_runs(np.array(res))
+# res = []
+# for param in params:
+#     temp = []
+#     model.fit(x_train, param)
+#     y_pred_proba = model.predict_proba(x_train)
+#     temp.append(compute_metrics(y_train,y_pred_proba))
+#     y_pred_proba = model.predict_proba(x_val)
+#     temp.append(compute_metrics(y_val,y_pred_proba))
+#     y_pred_proba = model.predict_proba(x_test)
+#     temp.append(compute_metrics(y_test,y_pred_proba))
+#     res.append(res)
+# plot_runs(np.array(res))
     
-'''
+# '''
+
+def visualize(path):
+    '''
+    isualize results from .csv file
+    
+    Parameters
+    ----------
+    path: string - path to .csv file
+    '''
+    
+    data = pd.read_csv(path, sep=";")
+    ans = data.loc[:, ["train", "val", "test"]].to_numpy()
+    names = data["name"]
+    plot_runs(ans, names, "Названия методов")
