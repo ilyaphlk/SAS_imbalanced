@@ -26,6 +26,10 @@ def featurize(df_train, df_dev, df_test, drop_features=None):
     df_dev = transform_time(df_dev)
     df_test = transform_time(df_test)
 
+    df_train['amount'] = np.log1p(df_train['amount'])
+    df_dev['amount'] = np.log1p(df_dev['amount'])
+    df_test['amount'] = np.log1p(df_test['amount'])
+
     if drop_features is not None:
         df_train = df_train.drop(columns=drop_features)
         df_dev = df_dev.drop(columns=drop_features)
