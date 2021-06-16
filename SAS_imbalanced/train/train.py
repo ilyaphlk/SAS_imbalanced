@@ -10,7 +10,7 @@ from catboost import CatBoostClassifier
 from sklearn.metrics import f1_score, average_precision_score
 
 
-def train_model(config_yaml, folds_path, out_model_path):
+def train_model(config_yaml, folds_path, out_model_path, res_csv_path):
     '''
         fit all the stuff
         featurize, resample, fit a classifier
@@ -47,16 +47,25 @@ def train_model(config_yaml, folds_path, out_model_path):
 
     print("predicting... ")
     y_pred = clf.predict(X_train)
-    print("average_precision, train:", average_precision_score(y_train, y_pred))
+    prc_train = average_precision_score(y_train, y_pred)
+    print("average_precision, train:", )
 
     y_pred = clf.predict(X_dev)
-    print("average_precision, validation:", average_precision_score(y_dev, y_pred))
+    prc_dev = average_precision_score(y_dev, y_pred)
+    print("average_precision, validation:", prc_dev)
 
     y_pred = clf.predict(X_test)
-    print("average_precision, test:", average_precision_score(y_test, y_pred))
+    prc_test = average_precision_score(y_test, y_pred)
+    print("average_precision, test:", prc_test)
+
+    exp_name = params['exp_name']
+
+    res = pd.read_csv(res_csv_path)
+    res[exp_name] = [prc_train, prc_dev, prc_test]
+    res.to_csv(res_csv_path)
 
     print("saving model... ", end="")
-    exp_name = params['exp_name']
+    
     clf.save_model(os.path.join(out_model_path, exp_name))
     print("done.")
 
