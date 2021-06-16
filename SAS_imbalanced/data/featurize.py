@@ -2,6 +2,18 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.compose import ColumnTransformer
 import pandas as pd
 
+def transform_time(df):
+    sec_in_hour = 60 * 60
+    sec_in_day = sec_in_hour * 24
+    df['hour'] = (df['Time'] % sec_in_day) // sec_in_hour
+    df['day'] = df['Time'] // sec_in_day
+    hour_2 = df['hour'] == 2
+    hour_11 = df['hour'] == 11
+    df['is_anomaly_hour'] = np.logical_or(hour_2.values, hour_11.values)
+    df = df.drop(columns=['Time', 'hour', 'day'])
+
+    return df
+
 
 def featurize(df_train, df_dev, df_test, drop_features=None):
     '''
@@ -9,6 +21,10 @@ def featurize(df_train, df_dev, df_test, drop_features=None):
         fit_transforms a train, transforms dev and test
         returns transformed dataframes
     '''
+
+    df_train = transform_time(df_train)
+    df_dev = transform_time(df_dev)
+    df_test = transform_time(df_test)
 
     if drop_features is not None:
         df_train = df_train.drop(columns=drop_features)
