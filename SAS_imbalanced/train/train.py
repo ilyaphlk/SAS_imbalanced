@@ -60,8 +60,10 @@ def train_model(config_yaml, folds_path, out_model_path, res_csv_path):
 
     exp_name = params['exp_name']
 
-    res = pd.read_csv(res_csv_path)
+    res = pd.read_csv(res_csv_path) if res_csv_path is not None else pd.DataFrame()
     res[exp_name] = [prc_train, prc_dev, prc_test]
+    if res_csv_path is None:
+        res_csv_path = 'res.csv'
     res.to_csv(res_csv_path)
 
     print("saving model... ", end="")
@@ -71,7 +73,7 @@ def train_model(config_yaml, folds_path, out_model_path, res_csv_path):
 
 
 if __name__ == "__main__":
-    assert len(sys.argv) > 2, 'must specify a path to config, path to folds'
+    assert len(sys.argv) > 3, 'must specify a path to config, path to folds'
     path_to_config = sys.argv[1]
     path_to_folds = sys.argv[2]
 
@@ -79,4 +81,8 @@ if __name__ == "__main__":
     if len(sys.argv) > 3:
         model_save_path = sys.argv[3]
 
-    train_model(path_to_config, path_to_folds, model_save_path)
+    res_csv_path = None
+    if len(sys.argv) > 4:
+        res_csv_path = sys.argv[4]
+
+    train_model(path_to_config, path_to_folds, model_save_path, res_csv_path)
