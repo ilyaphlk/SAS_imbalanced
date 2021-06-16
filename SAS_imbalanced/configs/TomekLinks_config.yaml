@@ -1,0 +1,7 @@
+exp_name: "TomekLinks_run"
+split_strat: 'chrono'
+resampler: TomekLinks
+resampler_kwargs: {}
+classifier: CatBoostClassifier
+classifier_kwargs:
+  class_weight: None

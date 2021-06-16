@@ -1,0 +1,7 @@
+exp_name: "AIIKNN_run"
+split_strat: 'chrono'
+resampler: AIIKNN
+resampler_kwargs: {}
+classifier: CatBoostClassifier
+classifier_kwargs:
+  class_weight: None

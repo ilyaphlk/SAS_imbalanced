@@ -1,0 +1,7 @@
+exp_name: "BorderlineSMOTE_run"
+split_strat: 'chrono'
+resampler: BorderlineSMOTE
+resampler_kwargs: {}
+classifier: CatBoostClassifier
+classifier_kwargs:
+  class_weight: None

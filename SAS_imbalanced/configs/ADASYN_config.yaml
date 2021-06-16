@@ -1,0 +1,7 @@
+exp_name: "ADASYN_run"
+split_strat: 'chrono'
+resampler: ADASYN
+resampler_kwargs: {}
+classifier: CatBoostClassifier
+classifier_kwargs:
+  class_weight: None

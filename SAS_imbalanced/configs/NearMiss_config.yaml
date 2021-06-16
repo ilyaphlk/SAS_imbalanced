@@ -1,0 +1,7 @@
+exp_name: "NearMiss_run"
+split_strat: 'chrono'
+resampler: NearMiss
+resampler_kwargs: {}
+classifier: CatBoostClassifier
+classifier_kwargs:
+  class_weight: None

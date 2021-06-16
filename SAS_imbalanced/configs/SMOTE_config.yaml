@@ -1,7 +1,7 @@
-exp_name: "sample_run"
+exp_name: "SMOTE_run"
 split_strat: 'chrono'
-resampler: None
+resampler: SMOTE
 resampler_kwargs: {}
 classifier: CatBoostClassifier
 classifier_kwargs:
-  n_estimators: 10
+  class_weight: None

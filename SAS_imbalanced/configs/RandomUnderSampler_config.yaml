@@ -1,0 +1,7 @@
+exp_name: "RandomUnderSampler_run"
+split_strat: 'chrono'
+resampler: RandomUnderSampler
+resampler_kwargs: {}
+classifier: CatBoostClassifier
+classifier_kwargs:
+  class_weight: None
