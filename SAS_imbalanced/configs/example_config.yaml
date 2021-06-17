@@ -5,4 +5,5 @@ resampler_kwargs: {}
 classifier: CatBoostClassifier
 classifier_kwargs:
   n_estimators: 10
+  random_seed: 2
 

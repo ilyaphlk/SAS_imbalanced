@@ -31,6 +31,10 @@ def featurize(df_train, df_dev, df_test, drop_features=None):
     df_dev['Amount'] = np.log1p(df_dev['Amount'])
     df_test['Amount'] = np.log1p(df_test['Amount'])
 
+    v_drop = [1, 5, 6, 8, 9, 13, 15]
+    v_drop.extend(list(range(18, 28+1)))
+    drop_features = list(map(lambda x: 'V'+str(x), v_drop))
+
     if drop_features is not None:
         df_train = df_train.drop(columns=drop_features)
         df_dev = df_dev.drop(columns=drop_features)

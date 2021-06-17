@@ -40,15 +40,19 @@ def train_model(config_yaml, folds_path, out_model_path, res_csv_path):
     clf = clf_class(**clf_kwargs)
 
     print("fitting model... ", end='')
-    y_train, y_dev = df_train['Class'], df_dev['Class']
-    X_train, X_dev = df_train.drop(columns=['Class']), df_dev.drop(columns=['Class'])
+    y_train = df_train['Class']
+    y_dev = df_dev['Class']
+    y_test = df_test['Class']
+    X_train = df_train.drop(columns=['Class'])
+    X_dev = df_dev.drop(columns=['Class'])
+    X_test = df_test.drop(columns=['Class'])
     clf.fit(X_train, y_train)
     print("done.")
 
     print("predicting... ")
     y_pred = clf.predict(X_train)
     prc_train = average_precision_score(y_train, y_pred)
-    print("average_precision, train:", )
+    print("average_precision, train:", prc_train)
 
     y_pred = clf.predict(X_dev)
     prc_dev = average_precision_score(y_dev, y_pred)
@@ -64,7 +68,7 @@ def train_model(config_yaml, folds_path, out_model_path, res_csv_path):
     res[exp_name] = [prc_train, prc_dev, prc_test]
     if res_csv_path is None:
         res_csv_path = 'res.csv'
-    res.to_csv(res_csv_path)
+    res.to_csv(res_csv_path, index=False)
 
     print("saving model... ", end="")
     
