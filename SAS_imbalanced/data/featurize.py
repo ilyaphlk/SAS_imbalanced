@@ -1,6 +1,7 @@
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.compose import ColumnTransformer
 import pandas as pd
+import numpy as np
 
 def transform_time(df):
     sec_in_hour = 60 * 60
@@ -26,9 +27,9 @@ def featurize(df_train, df_dev, df_test, drop_features=None):
     df_dev = transform_time(df_dev)
     df_test = transform_time(df_test)
 
-    df_train['amount'] = np.log1p(df_train['amount'])
-    df_dev['amount'] = np.log1p(df_dev['amount'])
-    df_test['amount'] = np.log1p(df_test['amount'])
+    df_train['Amount'] = np.log1p(df_train['Amount'])
+    df_dev['Amount'] = np.log1p(df_dev['Amount'])
+    df_test['Amount'] = np.log1p(df_test['Amount'])
 
     if drop_features is not None:
         df_train = df_train.drop(columns=drop_features)
@@ -50,4 +51,4 @@ def featurize(df_train, df_dev, df_test, drop_features=None):
     df_dev = pd.DataFrame(ct.transform(df_dev), index=df_dev.index, columns=df_dev.columns)
     df_test = pd.DataFrame(ct.transform(df_test), index=df_test.index, columns=df_test.columns)
 
-    return df_train, df_dev, df_test
+    return df_train.astype('float'), df_dev.astype('float'), df_test.astype('float')
