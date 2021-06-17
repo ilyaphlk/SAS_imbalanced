@@ -1,5 +1,5 @@
 python3 data/split.py creditcard.csv artifacts
 
-python3 train/train.py example_config.yaml artifacts artifacts res.csv
+python3 train/train.py configs/example_config.yaml artifacts artifacts res.csv
 
-python3 train/run.py example_config.yaml artifacts artifacts
+python3 train/run.py configs/example_config.yaml artifacts artifacts
