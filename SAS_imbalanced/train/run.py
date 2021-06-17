@@ -3,7 +3,9 @@ import yaml
 import os
 import sys
 import pandas as pd
+import pickle
 from catboost import CatBoostClassifier
+from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.metrics import f1_score, average_precision_score
 
 
@@ -14,9 +16,18 @@ def run_model(config_yaml, fold_path, path_to_model):
     with open(config_yaml) as cfg:
         params = yaml.load(cfg, Loader=yaml.FullLoader)
 
-    clf = CatBoostClassifier()
+
+    clf_class = eval(params['classifier'])
+    clf_kwargs = params['classifier_kwargs']
+    clf = clf_class(**clf_kwargs)
     exp_name = params['exp_name']
-    clf.load_model(os.path.join(exp_name, path_to_model))
+
+    mpath = os.path.join(exp_name, path_to_model)
+    if clf_class == CatBoostClassifier:
+        clf.load_model(mpath)
+    else:
+        with open(mpath, 'rb') as f:
+            clf = pickle.load(f)
 
     df_test = pd.read_csv(os.path.join(fold_path, 'test.csv'))
     y_test = df_test['Class']

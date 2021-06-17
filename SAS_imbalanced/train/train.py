@@ -6,7 +6,9 @@ from SAS_imbalanced.data.resample import resample
 import os
 import sys
 import pandas as pd
+import pickle
 from catboost import CatBoostClassifier
+from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.metrics import f1_score, average_precision_score
 
 
@@ -72,7 +74,13 @@ def train_model(config_yaml, folds_path, out_model_path, res_csv_path):
 
     print("saving model... ", end="")
     
-    clf.save_model(os.path.join(out_model_path, exp_name))
+    mpath = os.path.join(exp_name, path_to_model)
+    if clf_class == CatBoostClassifier:
+        clf.save_model(mpath)
+    else:
+        with open(mpath, 'wb') as f:
+            pickle.dump(f)
+
     print("done.")
 
 
