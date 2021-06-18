@@ -21,6 +21,12 @@ def split(df, strat='chrono', out_dir=None):
         df_dev.to_csv(os.path.join(out_dir, 'dev.csv'))
         df_test.to_csv(os.path.join(out_dir, 'test.csv'))
 
+
+    print("pos vs all ratio:")
+    print(f"train: {df_train[df_train['Class'] == 1].shape[0]}/{df_train['Class'].shape[0]}")
+    print(f"dev: {df_dev[df_dev['Class'] == 1].shape[0]}/{df_dev['Class'].shape[0]}")
+    print(f"test: {df_test[df_test['Class'] == 1].shape[0]}/{df_test['Class'].shape[0]}")
+
     return df_train, df_dev, df_test
 
 
