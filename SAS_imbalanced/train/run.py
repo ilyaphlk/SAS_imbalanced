@@ -4,7 +4,9 @@ import os
 import sys
 import pandas as pd
 import pickle
+import numpy as np
 from catboost import CatBoostClassifier
+from SAS_imbalanced.data.featurize import featurize
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.metrics import f1_score, average_precision_score
 
@@ -22,7 +24,7 @@ def run_model(config_yaml, fold_path, path_to_model, path_to_ans):
     clf = clf_class(**clf_kwargs)
     exp_name = params['exp_name']
 
-    mpath = os.path.join(exp_name, path_to_model)
+    mpath = os.path.join(path_to_model, exp_name)
     if clf_class == CatBoostClassifier:
         clf.load_model(mpath)
     else:
@@ -31,16 +33,20 @@ def run_model(config_yaml, fold_path, path_to_model, path_to_ans):
 
     df_test = pd.read_csv(os.path.join(fold_path, 'test.csv'))
 
+    df_test = featurize(None, None, df_test, drop_features=None, run_mode=True)
+
     y_test = None
     X_test = df_test
     if 'Class' in df_test:
-        y_test = df_test['Class']
+        y_test = df_test['Class'].astype('int64')
         X_test = df_test.drop(columns=['Class'])
 
 
     y_pred = clf.predict(X_test)
     if y_test is not None:
-        print("average_precision, test:", average_precision_score(y_test, y_pred))
+        print("average_precision, test:", average_precision_score(
+            np.hstack([y_test, np.ones(1)]).astype('int64'),
+            np.hstack([y_pred, np.zeros(1)]).astype('int64')))
 
     ans_path = os.path.join(path_to_ans, exp_name+"_ans.csv")
     df_ans = pd.DataFrame()

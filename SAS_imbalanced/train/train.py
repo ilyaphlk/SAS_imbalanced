@@ -2,6 +2,9 @@ import yaml
 
 from SAS_imbalanced.data.featurize import featurize
 from SAS_imbalanced.data.resample import resample
+from imblearn.over_sampling import SMOTE, ADASYN, BorderlineSMOTE, SVMSMOTE, KMeansSMOTE
+from imblearn.under_sampling import ClusterCentroids, RandomUnderSampler, NearMiss, AllKNN, TomekLinks
+
 #from SAS_imbalanced.utils import compute_metrics
 import os
 import sys
@@ -10,6 +13,7 @@ import pickle
 from catboost import CatBoostClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.metrics import f1_score, average_precision_score
+import numpy as np
 
 
 def train_model(config_yaml, folds_path, out_model_path, res_csv_path):
@@ -42,9 +46,9 @@ def train_model(config_yaml, folds_path, out_model_path, res_csv_path):
     clf = clf_class(**clf_kwargs)
 
     print("fitting model... ", end='')
-    y_train = df_train['Class'].astype('int32')
-    y_dev = df_dev['Class'].astype('int32')
-    y_test = df_test['Class'].astype('int32')
+    y_train = df_train['Class'].astype('int64')
+    y_dev = df_dev['Class'].astype('int64')
+    y_test = df_test['Class'].astype('int64')
     X_train = df_train.drop(columns=['Class'])
     X_dev = df_dev.drop(columns=['Class'])
     X_test = df_test.drop(columns=['Class'])
@@ -52,16 +56,24 @@ def train_model(config_yaml, folds_path, out_model_path, res_csv_path):
     print("done.")
 
     print("predicting... ")
-    y_pred = clf.predict(X_train)
-    prc_train = average_precision_score(y_train, y_pred)
+    y_pred = clf.predict(X_train).astype('int64')
+    prc_train = average_precision_score(y_train, y_pred.astype('int64'))
     print("average_precision, train:", prc_train)
 
-    y_pred = clf.predict(X_dev)
-    prc_dev = average_precision_score(y_dev, y_pred)
+    y_pred = clf.predict(X_dev).astype('int64')
+    #print(y_pred.dtype)
+    
+    prc_dev = average_precision_score(
+        np.hstack([y_dev, np.ones(1)]).astype('int64'),
+        np.hstack([y_pred, np.zeros(1)]).astype('int64')
+    )
     print("average_precision, validation:", prc_dev)
 
-    y_pred = clf.predict(X_test)
-    prc_test = average_precision_score(y_test, y_pred)
+    y_pred = clf.predict(X_test).astype('int64')
+    prc_test = average_precision_score(
+        np.hstack([y_test, np.ones(1)]).astype('int64'),
+        np.hstack([y_pred, np.zeros(1)]).astype('int64')
+    )
     print("average_precision, test:", prc_test)
 
     exp_name = params['exp_name']
@@ -74,7 +86,7 @@ def train_model(config_yaml, folds_path, out_model_path, res_csv_path):
 
     print("saving model... ", end="")
     
-    mpath = os.path.join(exp_name, path_to_model)
+    mpath = os.path.join(out_model_path, exp_name)
     if clf_class == CatBoostClassifier:
         clf.save_model(mpath)
     else:
