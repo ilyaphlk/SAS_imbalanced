@@ -42,9 +42,9 @@ def train_model(config_yaml, folds_path, out_model_path, res_csv_path):
     clf = clf_class(**clf_kwargs)
 
     print("fitting model... ", end='')
-    y_train = df_train['Class']
-    y_dev = df_dev['Class']
-    y_test = df_test['Class']
+    y_train = df_train['Class'].astype('int32')
+    y_dev = df_dev['Class'].astype('int32')
+    y_test = df_test['Class'].astype('int32')
     X_train = df_train.drop(columns=['Class'])
     X_dev = df_dev.drop(columns=['Class'])
     X_test = df_test.drop(columns=['Class'])
