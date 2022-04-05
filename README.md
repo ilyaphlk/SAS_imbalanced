@@ -1,5 +1,7 @@
 # SAS_imbalanced
 
+Решение задачи несбалансированной классификации из соревнования https://www.kaggle.com/mlg-ulb/creditcardfraud.
+
 Инструкции по запуску:
 
 1. Для работы понадобятся библиотеки catboost, imblearn, yaml. Можно установить командами `pip3 install imbalanced-learn`, `pip install catboost`, и `pip install PyYAML -U`
